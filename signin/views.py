@@ -1,19 +1,17 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout,user_logged_in
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_control
+
 # Create your views here.
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home(request):    
     if 'username' in request.session:             
        return render(request, "home.html")             
-    return redirect('signin')
-    
-def clrcook(request):
-    request.session.delete_test_cookie() 
-    
+    return redirect('signin') 
+  
+   
 @cache_control(no_cache=True, must_revalidate=True, no_store=True) 
 def signin(request):
     if 'username' in request.session:
@@ -25,13 +23,13 @@ def signin(request):
        
         if user is not None:
             request.session['username'] = username
-            login(request, user)            
+            login(request, user)                     
             return redirect('home')
-            
+    
         else:
             messages.error(request, "Bad Credentials!")
             return redirect('home')   
-      
+    
     return render(request, "signin.html")
 
 
